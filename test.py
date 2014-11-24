@@ -12,7 +12,7 @@ def main(argv):
     nfoPath = os.path.join(*pathlist)
     
     videofile = VideoFile.get(VideoFile.path == fullpath)
-    movie = HomeVideo.get(HomeVideo.mapper_id == videofile.mapper_id)
+    movie = HomeVideo.get(HomeVideo.mapper.id == videofile.mapper.id)
 
     tree = ET.parse(nfoPath)
     root = tree.getroot()
@@ -24,11 +24,11 @@ def main(argv):
 
     for tag in root.findall('tag'):
         #print 'tag:', tag.text
-        Genre.insert(mapper_id=videofile.mapper_id, genre=tag.text).execute()
+        Genre.insert(mapper_id=videofile.mapper.id, genre=tag.text).execute()
 
     for actor in root.findall('actor'):
         #print 'actor:', actor.find('name').text
-        Actor.insert(mapper_id=videofile.mapper_id, actor=actor.find('name').text).execute()
+        Actor.insert(mapper_id=videofile.mapper.id, actor=actor.find('name').text).execute()
 
 if __name__ == '__main__':
     sys.exit(main(sys.argv))
