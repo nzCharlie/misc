@@ -3,9 +3,11 @@
 function list()
 {
   local path="$1";
-  p=$(ncftpls -m "$path");
+  p=$(ncftpls -m "${path// /%20}");
+  
   # turn p into array of file paths for the given $path
-  p=( $p )
+  p=("${p// /%20}")
+  
   # if the given $path is for a single file then print it
   if [[ ${#p[@]} -eq 1 && ${p[@]} == ${path: $(( -1 * ${#p[0]} ))} ]]; then
     echo "${path}";
@@ -16,13 +18,14 @@ function list()
       i=$(echo $a | sed -r 's|^.*/([^/]+)/?$|\1|')
       # if path is a dir, list it
       if [ ${a: -1} == "/" ]; then
-        list "${path}/${i}";
+        list "${path}/${i//%20/ }";
       else
         # otherwise print it 
-        echo "${path}/${i}";
+        echo "${path}/${i//%20/ }";
       fi
     done
   fi
 }
 
 list "$1";
+
